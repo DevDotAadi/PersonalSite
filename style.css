@@ -4,6 +4,7 @@
 */
 
 :root {
+  color-scheme: light;
   --bg-color: #ffffff;
   --text-color: #111111;
   --text-muted: #666666;
@@ -16,6 +17,7 @@
 }
 
 [data-theme="dark"] {
+  color-scheme: dark;
   --bg-color: #110e19;
   --text-color: #eaeaea;
   --text-muted: #999999;
@@ -307,15 +309,19 @@ a:focus-visible, button:focus-visible {
 }
 
 /* Smooth in-place theme morph (fallback when View Transitions unavailable).
-   Gated behind html.ready so page loads paint instantly with no morph. */
-html.ready body,
+   Gated behind html.ready so page loads paint instantly with no morph.
+   Split by property so text elements interpolate color only. */
+html.ready body {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
 html.ready h1,
 html.ready h2,
 html.ready h3,
 html.ready p,
 html.ready li,
 html.ready a {
-  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+  transition: color 0.35s ease;
 }
 
 /* Disabled during the reveal: the snapshot crossfade does all visual work. */
@@ -330,18 +336,23 @@ html.vt a {
 }
 
 /* Circular theme reveal: content cross-fades, never hides */
+::view-transition-group(root) {
+  animation-duration: 0.25s;
+}
+
 ::view-transition-old(root) {
   animation: none;
 }
 
 ::view-transition-new(root) {
-  animation: wipe-in 0.3s ease-out;
+  animation: wipe-in 0.25s ease-out;
   clip-path: circle(0px at var(--wipe-x, 50%) var(--wipe-y, 0px));
+  will-change: clip-path;
 }
 
 @keyframes wipe-in {
   to {
-    clip-path: circle(150vmax at var(--wipe-x, 50%) var(--wipe-y, 0px));
+    clip-path: circle(100vmax at var(--wipe-x, 50%) var(--wipe-y, 0px));
   }
 }
 
