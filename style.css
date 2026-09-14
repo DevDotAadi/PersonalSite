@@ -207,6 +207,23 @@ a:hover {
   color: var(--text-muted);
 }
 
+.caption {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.signoff {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.signoff-note {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
 /* Bullet & Dashed Lists */
 ul.bullet-list {
   list-style-type: disc;
@@ -273,39 +290,6 @@ ul.dashed-list > li::before {
   font-size: 0.95rem;
 }
 
-/* Expandable Inline Essay Reading */
-details.essay-details {
-  margin-top: 0.4rem;
-}
-
-details.essay-details summary {
-  cursor: pointer;
-  color: var(--link-color);
-  text-decoration: underline;
-  font-size: 0.9rem;
-  display: inline-block;
-}
-
-details.essay-details summary:hover {
-  text-decoration: none;
-}
-
-.essay-content {
-  margin-top: 0.6rem;
-  padding: 0.85rem 1rem;
-  background-color: var(--code-bg);
-  border-left: 2px solid var(--border-color);
-  font-size: 0.93rem;
-}
-
-.essay-content p {
-  margin-bottom: 0.6rem;
-}
-
-.essay-content p:last-child {
-  margin-bottom: 0;
-}
-
 /* Footer */
 footer {
   margin-top: 2.5rem;
@@ -333,7 +317,7 @@ footer p {
   overflow-y: auto;
 }
 
-a:focus-visible, button:focus-visible, summary:focus-visible {
+a:focus-visible, button:focus-visible {
   outline: 2px solid var(--link-color);
   outline-offset: 2px;
 }
