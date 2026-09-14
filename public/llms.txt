@@ -1,0 +1,25 @@
+# Aditya Singh
+
+> Personal site of Aditya Singh: CS undergrad building Beyond Search, a company working on AI search visibility (AEO/GEO). Ships software, talks to users, writes things down.
+
+## Pages
+
+- [Home](https://aditya-singh-personal-site.vercel.app/): who I am, what I'm building, the lore so far.
+- [Now](https://aditya-singh-personal-site.vercel.app/now.html): what I'm doing right now, current obsessions.
+- [Built](https://aditya-singh-personal-site.vercel.app/built.html): things I made, including failures, and what I learned.
+- [Writing](https://aditya-singh-personal-site.vercel.app/writing.html): essays and notes index.
+- [Elsewhere](https://aditya-singh-personal-site.vercel.app/elsewhere.html): where to find me, field notes on the human.
+
+## Essays
+
+- [The shift from search engines to recommendation engines](https://aditya-singh-personal-site.vercel.app/writing/search-to-recommendations.html): ten blue links became one opinionated answer.
+- [Why every founder should care about AI visibility](https://aditya-singh-personal-site.vercel.app/writing/ai-visibility.html): if AI never mentions you, you never enter the shortlist.
+- [Websites that feel made by humans](https://aditya-singh-personal-site.vercel.app/writing/human-websites.html): plain HTML against the template web.
+
+## Contact
+
+- Email: devdotaadi@gmail.com
+- X: https://x.com/AdityasLogs
+- GitHub: https://github.com/DevDotAadi
+- LinkedIn: https://www.linkedin.com/in/aditya-singh-b60a04362
+- Company: https://thebeyondsearch.com

@@ -68,64 +68,29 @@
     updateIcon(theme);
   }
 
-  function performThemeWipe(newTheme, event) {
+  function performThemeSwap(newTheme, event) {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (prefersReducedMotion || !event) {
-      safeSet(STORAGE_KEY, newTheme);
+
+    safeSet(STORAGE_KEY, newTheme);
+
+    // No animation path: reduced motion, keyboard toggle, or no View Transitions support.
+    // style.css color transitions morph the theme in place. Content never hides.
+    if (prefersReducedMotion || !event || typeof document.startViewTransition !== 'function') {
       applyThemeDirect(newTheme);
       return;
     }
 
-    // Origin of wipe animation (button click location or top right default)
+    // Circular reveal from the click point. The browser cross-fades
+    // old to new snapshot, so content stays visible throughout.
     const rect = toggleBtn ? toggleBtn.getBoundingClientRect() : { left: window.innerWidth - 40, top: 40, width: 24, height: 24 };
     const x = event.clientX || (rect.left + rect.width / 2);
     const y = event.clientY || (rect.top + rect.height / 2);
+    document.documentElement.style.setProperty('--wipe-x', x + 'px');
+    document.documentElement.style.setProperty('--wipe-y', y + 'px');
 
-    // Calculate maximum radius to cover the entire screen
-    const maxRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-
-    // Target background color for the incoming theme
-    const nextBgColor = newTheme === 'dark' ? '#110e19' : '#ffffff';
-
-    // Create transient layer wipe overlay
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100vw';
-    overlay.style.height = '100vh';
-    overlay.style.backgroundColor = nextBgColor;
-    overlay.style.zIndex = '99999';
-    overlay.style.pointerEvents = 'none';
-    overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
-    overlay.style.transition = 'clip-path 500ms cubic-bezier(0.4, 0, 0.2, 1)';
-    document.body.appendChild(overlay);
-
-    // Trigger expansion
-    requestAnimationFrame(() => {
-      overlay.style.clipPath = `circle(${maxRadius}px at ${x}px ${y}px)`;
-    });
-
-    // Apply actual DOM theme change halfway through the wipe transition
-    setTimeout(() => {
-      safeSet(STORAGE_KEY, newTheme);
+    document.startViewTransition(() => {
       applyThemeDirect(newTheme);
-    }, 250);
-
-    // Remove wipe overlay smoothly upon completion
-    setTimeout(() => {
-      overlay.style.opacity = '0';
-      overlay.style.transition = 'opacity 150ms ease';
-      setTimeout(() => {
-        if (overlay.parentNode) {
-          overlay.parentNode.removeChild(overlay);
-        }
-      }, 150);
-    }, 520);
+    });
   }
 
   // Initialize theme on load
@@ -136,7 +101,7 @@
     toggleBtn.addEventListener('click', function (e) {
       const currentTheme = document.documentElement.getAttribute('data-theme') || getSystemTheme();
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      performThemeWipe(newTheme, e);
+      performThemeSwap(newTheme, e);
     });
   }
 
