@@ -94,7 +94,9 @@ header {
   letter-spacing: -0.01em;
 }
 
-/* Borderless Theme Toggle Icon directly next to name */
+/* Borderless Theme Toggle Icon directly next to name.
+   Visually unchanged, but the hit area is a full 44x44px touch target
+   (padding expands it, negative margin keeps surrounding spacing fixed). */
 .theme-toggle-btn {
   background: transparent;
   border: none;
@@ -105,8 +107,10 @@ header {
   justify-content: center;
   color: var(--text-color);
   cursor: pointer;
-  padding: 0;
-  margin: 0;
+  padding: 14px;
+  margin: -14px;
+  min-width: 44px;
+  min-height: 44px;
   opacity: 1;
   transition: none;
   animation: none;
@@ -141,6 +145,13 @@ nav.main-nav a {
 
 nav.main-nav a:hover {
   text-decoration: none;
+}
+
+@media (hover: none) {
+  nav.main-nav a:hover,
+  a:hover {
+    text-decoration: underline;
+  }
 }
 
 nav.main-nav a.active {
