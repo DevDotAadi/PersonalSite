@@ -290,41 +290,32 @@ ul.dashed-list > li::before {
   font-size: 0.95rem;
 }
 
-/* Footer */
-footer {
-  margin-top: 2.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-footer p {
-  margin-bottom: 0.4rem;
-  color: var(--text-muted);
-}
-
-#source-view-container {
-  margin-top: 1rem;
-  padding: 0.85rem;
-  background: var(--code-bg);
-  border: 1px solid var(--border-color);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.78rem;
-  white-space: pre-wrap;
-  word-break: break-all;
-  max-height: 350px;
-  overflow-y: auto;
-}
-
 a:focus-visible, button:focus-visible {
   outline: 2px solid var(--link-color);
   outline-offset: 2px;
 }
 
-/* Smooth in-place theme morph (fallback when View Transitions unavailable) */
-html, body, header, footer, h1, h2, h3, p, li, a {
+/* Smooth in-place theme morph (fallback when View Transitions unavailable).
+   Gated behind html.ready so page loads paint instantly with no morph. */
+html.ready body,
+html.ready h1,
+html.ready h2,
+html.ready h3,
+html.ready p,
+html.ready li,
+html.ready a {
   transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+/* Disabled during the reveal: the snapshot crossfade does all visual work. */
+html.vt body,
+html.vt h1,
+html.vt h2,
+html.vt h3,
+html.vt p,
+html.vt li,
+html.vt a {
+  transition: none;
 }
 
 /* Circular theme reveal: content cross-fades, never hides */
@@ -333,7 +324,7 @@ html, body, header, footer, h1, h2, h3, p, li, a {
 }
 
 ::view-transition-new(root) {
-  animation: wipe-in 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: wipe-in 0.3s ease-out;
   clip-path: circle(0px at var(--wipe-x, 50%) var(--wipe-y, 0px));
 }
 
@@ -347,7 +338,13 @@ html, body, header, footer, h1, h2, h3, p, li, a {
   ::view-transition-new(root) {
     animation: none;
   }
-  html, body, header, footer, h1, h2, h3, p, li, a {
+  html.ready body,
+  html.ready h1,
+  html.ready h2,
+  html.ready h3,
+  html.ready p,
+  html.ready li,
+  html.ready a {
     transition: none;
   }
 }

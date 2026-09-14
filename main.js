@@ -2,10 +2,10 @@
  * Aditya Singh - Client Script
  * Features:
  * - Theme toggle with clean, minimal SVG icons (Sun / Moon)
- * - Interactive radial layer/wipe transition traveling across the page (400-600ms)
+ * - Circular theme reveal via View Transitions (content stays visible)
+ * - Smooth in-place color morph fallback, no animation on page load
  * - Respects prefers-reduced-motion
- * - Theme state persistence via localStorage
- * - View source inspector drawer
+ * - Theme state persistence via safe storage (localStorage with fallback)
  */
 
 (function () {
@@ -82,20 +82,38 @@
 
     // Circular reveal from the click point. The browser cross-fades
     // old to new snapshot, so content stays visible throughout.
+    // Per-element color transitions are disabled during the reveal
+    // (html.vt) so the GPU does one animation instead of dozens.
     const rect = toggleBtn ? toggleBtn.getBoundingClientRect() : { left: window.innerWidth - 40, top: 40, width: 24, height: 24 };
     const x = event.clientX || (rect.left + rect.width / 2);
     const y = event.clientY || (rect.top + rect.height / 2);
     document.documentElement.style.setProperty('--wipe-x', x + 'px');
     document.documentElement.style.setProperty('--wipe-y', y + 'px');
 
-    document.startViewTransition(() => {
+    document.documentElement.classList.add('vt');
+    const transition = document.startViewTransition(() => {
       applyThemeDirect(newTheme);
     });
+    const clearVt = () => {
+      document.documentElement.classList.remove('vt');
+    };
+    if (transition && transition.finished) {
+      transition.finished.then(clearVt, clearVt);
+    }
+    // Safety net in case the transition promise never settles.
+    setTimeout(clearVt, 600);
   }
 
-  // Initialize theme on load
+  // Initialize theme on load (before first paint morph: transitions
+  // only activate once the .ready class is added below).
   const initialTheme = getSavedTheme() || getSystemTheme();
   applyThemeDirect(initialTheme);
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.documentElement.classList.add('ready');
+    });
+  });
 
   if (toggleBtn) {
     toggleBtn.addEventListener('click', function (e) {
@@ -117,27 +135,5 @@
     colorSchemeQuery.addEventListener('change', onColorSchemeChange);
   } else if (typeof colorSchemeQuery.addListener === 'function') {
     colorSchemeQuery.addListener(onColorSchemeChange);
-  }
-
-  // View Source Drawer
-  const viewSourceBtn = document.getElementById('view-source-btn');
-  const sourceContainer = document.getElementById('source-view-container');
-
-  if (viewSourceBtn && sourceContainer) {
-    viewSourceBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      if (sourceContainer.hidden) {
-        const htmlContent = document.doctype 
-          ? new XMLSerializer().serializeToString(document.doctype) + "\n" + document.documentElement.outerHTML
-          : document.documentElement.outerHTML;
-        
-        sourceContainer.textContent = htmlContent;
-        sourceContainer.hidden = false;
-        viewSourceBtn.textContent = '[hide source]';
-      } else {
-        sourceContainer.hidden = true;
-        viewSourceBtn.textContent = '[View source]';
-      }
-    });
   }
 })();
